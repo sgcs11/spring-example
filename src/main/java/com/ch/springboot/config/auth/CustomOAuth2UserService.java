@@ -1,5 +1,8 @@
 package com.ch.springboot.config.auth;
 
+import com.ch.springboot.config.auth.dto.OAuthAttributes;
+import com.ch.springboot.config.auth.dto.SessionUser;
+import com.ch.springboot.domain.user.User;
 import com.ch.springboot.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,15 +31,19 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
-        OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, OAuth2User.getAttributes());
+        OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         User user = saveOrUpdate(attributes);
 
         httpSession.setAttribute("user", new SessionUser(user));
 
-        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey(), attributes.getAttributes(), attributes.getNameAttributeKey())));
-
-        private User saveOrUdpate(OAuthAttributes attributes) {
+        return new DefaultOAuth2User(
+                Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
+                attributes.getAttributes(),
+                attributes.getNameAttributeKey()
+                );
+        }
+        private User saveOrUpdate(OAuthAttributes attributes) {
             User user = userRepository.findByEmail(attributes.getEmail())
                     .map(entity -> entity.update(attributes.
                             getName(), attributes.getPicture()))
@@ -44,5 +51,4 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
             return userRepository.save(user);
         }
-    }
 }
