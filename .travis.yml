@@ -24,7 +24,7 @@ notifications:
       - sgcs1681@gmail.com
 
 before_deploy:
-  - zip -r travelers-springboot2-webservice /spring-example
+  - zip -r travelers-springboot2-webservice *
   - mkdir -p deploy
   - mv travelers-springboot2-webservice.zip deploy/travelers-springboot2-webservice.zip
 
