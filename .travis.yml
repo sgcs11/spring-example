@@ -17,12 +17,6 @@ script: "./gradlew clean build"
 before_install:
   - chmod +x gradlew
 
-# CI 실행 완료 시 메일로 알람
-notifications:
-  email:
-    recipients:
-      - sgcs1681@gmail.com
-
 before_deploy:
   - mkdir -p before-deploy # zip에 포함시킬 파일들을 담을 디렉토리 생성
   - cp scripts/*.sh before-deploy/
@@ -53,3 +47,9 @@ deploy:
     deployment_group: travelers-springboot2-webservice-group # 웹 콘솔에서 등록한 CodeDeploy 배포 그룹
     region: ap-northeast-2
     wait-until-deployed: true
+
+# CI 실행 완료 시 메일로 알람
+notifications:
+  email:
+    recipients:
+      - sgcs1681@gmail.com
