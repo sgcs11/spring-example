@@ -16,3 +16,4 @@ hooks:
     - location: deploy.sh
       timeout: 60
       runas: ec2-user
+#변경 적용 확인
